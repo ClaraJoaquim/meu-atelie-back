@@ -23,6 +23,10 @@ public class Categoria {
     @Column(columnDefinition = "TEXT")
     private String descricao;
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
     @OneToMany(mappedBy = "categoria")
     @JsonIgnore
     private List<Produto> produtos;
