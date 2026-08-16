@@ -32,7 +32,7 @@ public class Encomenda {
     @Column(name = "data_entrega")
     private LocalDate dataEntrega;
 
-    @Column(name = "status_2")
+    @Column(name = "status")
     private String status;
 
     @Column(name = "valor_total")
