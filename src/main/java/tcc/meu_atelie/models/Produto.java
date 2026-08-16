@@ -34,8 +34,16 @@ public class Produto {
     private String descricao;
 
     private BigDecimal preco;
-
     private String imagem;
+
+    private BigDecimal precoCusto;
+    private Integer quantidadeEstoque;
+    private String status;
+    private Double largura;
+    private Double altura;
+
+    @Column(columnDefinition = "TEXT")
+    private String observacoes;
 
     @OneToMany(mappedBy = "produto")
     @JsonIgnore
