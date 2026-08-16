@@ -12,8 +12,15 @@ public class UsuarioDTO {
     private String email;
     private String telefone;
     private String cpf;
-    private String token;
     private String senha;
+    private String token;
+
+    private String nomeLoja;
+    private String descricaoLoja;
+    private String cnpj;
+    private String whatsapp;
+    private String facebook;
+    private String instagram;
 
     public UsuarioDTO() {}
 

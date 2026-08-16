@@ -34,4 +34,7 @@ public class Usuario {
     @Column(nullable = false)
     @JsonIgnore
     private String senha;
+
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private Loja loja;
 }
