@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import tcc.meu_atelie.dto.FaturamentoMensalBrutoDTO;
 import tcc.meu_atelie.dto.IndicadoresBrutoDTO;
 import tcc.meu_atelie.dto.RankingClienteRelatorioDTO;
+import tcc.meu_atelie.enums.StatusEncomenda;
 import tcc.meu_atelie.models.Encomenda;
 
 import java.time.LocalDate;
@@ -14,13 +15,17 @@ import java.util.List;
 
 public interface EncomendaRepository extends JpaRepository<Encomenda, Long> {
 
+    List<Encomenda> findByUsuarioEmailOrderByIdAsc(String email);
+
+    List<Encomenda> findByStatusAndDataPedidoBefore(StatusEncomenda status, LocalDate data);
+
     @Query("SELECT new tcc.meu_atelie.dto.IndicadoresBrutoDTO(" +
             "COALESCE(SUM(e.valorTotal), 0), COUNT(e)) " +
             "FROM Encomenda e " +
             "WHERE e.usuario.idUsuario = :usuarioId AND e.status IN :statusValidos " +
             "AND e.dataPedido BETWEEN :inicio AND :fim")
     IndicadoresBrutoDTO buscarIndicadores(@Param("usuarioId") Long usuarioId,
-                                           @Param("statusValidos") List<String> statusValidos,
+                                           @Param("statusValidos") List<StatusEncomenda> statusValidos,
                                            @Param("inicio") LocalDate inicio,
                                            @Param("fim") LocalDate fim);
 
@@ -33,7 +38,7 @@ public interface EncomendaRepository extends JpaRepository<Encomenda, Long> {
             "    AND e2.status IN :statusValidos" +
             ")")
     Long contarNovosClientes(@Param("usuarioId") Long usuarioId,
-                              @Param("statusValidos") List<String> statusValidos,
+                              @Param("statusValidos") List<StatusEncomenda> statusValidos,
                               @Param("inicio") LocalDate inicio,
                               @Param("fim") LocalDate fim);
 
@@ -43,7 +48,7 @@ public interface EncomendaRepository extends JpaRepository<Encomenda, Long> {
             "WHERE e.usuario.idUsuario = :usuarioId AND e.status IN :statusValidos " +
             "AND e.dataEntrega BETWEEN :inicio AND :fim")
     List<FaturamentoMensalBrutoDTO> buscarParaFaturamentoMensal(@Param("usuarioId") Long usuarioId,
-                                                                  @Param("statusValidos") List<String> statusValidos,
+                                                                  @Param("statusValidos") List<StatusEncomenda> statusValidos,
                                                                   @Param("inicio") LocalDate inicio,
                                                                   @Param("fim") LocalDate fim);
 
@@ -55,7 +60,7 @@ public interface EncomendaRepository extends JpaRepository<Encomenda, Long> {
             "GROUP BY c.id, c.nome " +
             "ORDER BY SUM(e.valorTotal) DESC")
     List<RankingClienteRelatorioDTO> rankingClientes(@Param("usuarioId") Long usuarioId,
-                                                       @Param("statusValidos") List<String> statusValidos,
+                                                       @Param("statusValidos") List<StatusEncomenda> statusValidos,
                                                        @Param("inicio") LocalDate inicio,
                                                        @Param("fim") LocalDate fim,
                                                        Pageable pageable);

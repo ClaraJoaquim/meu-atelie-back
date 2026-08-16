@@ -3,6 +3,7 @@ package tcc.meu_atelie.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tcc.meu_atelie.enums.StatusEncomenda;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,10 +13,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class FaturamentoMensalBrutoDTO {
     private LocalDate dataEntrega;
-    private String status;
+    private StatusEncomenda status;
     private BigDecimal valorTotal;
 
-    public FaturamentoMensalBrutoDTO(LocalDate dataEntrega, String status, BigDecimal valorTotal) {
+    public FaturamentoMensalBrutoDTO(LocalDate dataEntrega, StatusEncomenda status, BigDecimal valorTotal) {
         this.dataEntrega = dataEntrega;
         this.status = status;
         this.valorTotal = valorTotal;

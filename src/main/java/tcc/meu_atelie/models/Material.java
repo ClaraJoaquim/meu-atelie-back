@@ -1,11 +1,10 @@
 package tcc.meu_atelie.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -13,20 +12,34 @@ import java.util.List;
 @Table(name = "material")
 public class Material {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_material")
     private Long id;
 
-    @Column(nullable = false)
-    private String nome;
+    @Column(nullable = false) private String nome;
+    @Column(nullable = false) private String categoria;
+    @Column(nullable = false) private String cor;
 
-    @Column(name = "qtd_total")
-    private Integer qtdTotal;
+    @Column(name = "qtd_estoque", nullable = false)
+    private Integer quantidadeEstoque;
 
-    private BigDecimal preco;
+    @Column(nullable = false) private String unidadeMedida;
 
-    @ManyToMany(mappedBy = "materiais")
-    @JsonIgnore
-    private List<Produto> produtos;
+    private String codigoReferencia;
+    private String marca;
+    private Integer estoqueMinimo;
+
+    @Column(name = "preco_unitario")
+    private BigDecimal precoUnitario;
+
+    private LocalDate dataUltimaCompra;
+    private String anotacoes;
+
+    @ManyToOne
+    @JoinColumn(name = "fornecedor_id")
+    private Fornecedor fornecedor;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
 }

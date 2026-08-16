@@ -6,9 +6,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import tcc.meu_atelie.dto.*;
+import tcc.meu_atelie.enums.StatusEncomenda;
 import tcc.meu_atelie.models.Usuario;
 import tcc.meu_atelie.repositories.EncomendaRepository;
 import tcc.meu_atelie.repositories.ItemEncomendaRepository;
+import tcc.meu_atelie.repositories.UsuarioRepository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,8 +24,8 @@ import java.util.stream.Collectors;
 @Service
 public class RelatorioService {
 
-    private static final List<String> STATUS_VALIDOS = List.of("EM_ANDAMENTO", "FINALIZADO");
-    private static final String STATUS_FINALIZADO = "FINALIZADO";
+    private static final List<StatusEncomenda> STATUS_VALIDOS = List.of(StatusEncomenda.EM_ANDAMENTO, StatusEncomenda.FINALIZADO);
+    private static final StatusEncomenda STATUS_FINALIZADO = StatusEncomenda.FINALIZADO;
     private static final int LIMITE_PADRAO_RANKING_CLIENTES = 10;
 
     @Autowired
@@ -31,6 +33,9 @@ public class RelatorioService {
 
     @Autowired
     private ItemEncomendaRepository itemEncomendaRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     public IndicadoresPeriodoDTO buscarIndicadores(PeriodoTipo periodo, LocalDate dataReferencia) {
         Long usuarioId = usuarioLogado().getIdUsuario();
@@ -131,7 +136,8 @@ public class RelatorioService {
 
     private Usuario usuarioLogado() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (Usuario) authentication.getPrincipal();
+        String email = authentication.getName();
+        return usuarioRepository.findByEmail(email).orElseThrow();
     }
 
     private BigDecimal somarValores(List<FaturamentoMensalBrutoDTO> itens, boolean finalizados) {

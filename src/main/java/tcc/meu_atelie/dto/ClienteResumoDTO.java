@@ -17,15 +17,16 @@ public class ClienteResumoDTO {
     private Long totalPedidos;
     private BigDecimal totalGasto;
     private LocalDate dataCadastro;
+    private boolean ativo;
 
-    // Construtor customizado para tratar o valor nulo do banco
-    public ClienteResumoDTO(Long id, String nome, String telefone, String email, Long totalPedidos, BigDecimal totalGasto, LocalDate dataCadastro) {
+    public ClienteResumoDTO(Long id, String nome, String telefone, String email, Long totalPedidos, BigDecimal totalGasto, LocalDate dataCadastro, boolean ativo) {
         this.id = id;
         this.nome = nome;
         this.telefone = telefone;
         this.email = email;
         this.totalPedidos = totalPedidos;
-        this.totalGasto = totalGasto != null ? totalGasto : BigDecimal.ZERO; // Troca null por 0
+        this.totalGasto = totalGasto != null ? totalGasto : BigDecimal.ZERO;
         this.dataCadastro = dataCadastro;
+        this.ativo = ativo;
     }
 }

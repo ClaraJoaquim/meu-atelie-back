@@ -7,12 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tcc.meu_atelie.auth.TokenService;
 
+import tcc.meu_atelie.dto.PerfilUsuarioDTO;
 import tcc.meu_atelie.dto.UsuarioDTO;
+import tcc.meu_atelie.models.Loja;
 import tcc.meu_atelie.models.Usuario;
 import tcc.meu_atelie.services.UsuarioService;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -28,7 +30,6 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<?> criarUsuario(@RequestBody UsuarioDTO dto) {
         try {
-
             Usuario usuario = new Usuario();
             usuario.setNome(dto.getNome());
             usuario.setEmail(dto.getEmail());
@@ -36,19 +37,26 @@ public class UsuarioController {
             usuario.setCpf(dto.getCpf());
             usuario.setSenha(dto.getSenha());
 
+            Loja loja = new Loja();
+            loja.setNome(dto.getNomeLoja());
+            loja.setDescricao(dto.getDescricaoLoja());
+            loja.setCnpj(dto.getCnpj());
+            loja.setWhatsapp(dto.getWhatsapp());
+            loja.setFacebook(dto.getFacebook());
+            loja.setInstagram(dto.getInstagram());
+            loja.setUsuario(usuario);
+
+            usuario.setLoja(loja);
+
             Usuario salvo = usuarioService.salvarUsuario(usuario);
-
-            UsuarioDTO response = new UsuarioDTO(salvo);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            return ResponseEntity.status(HttpStatus.CREATED).body(new UsuarioDTO(salvo));
 
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(Map.of("message", "Este e-mail já está cadastrado."));
-
+                    .body(Map.of("message", "E-mail ou CNPJ já cadastrado."));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "Erro ao cadastrar usuário."));
+                    .body(Map.of("message", "Erro ao cadastrar usuário e loja."));
         }
     }
 
@@ -82,14 +90,9 @@ public class UsuarioController {
         }
     }
 
-
-
-    @GetMapping
-    public List<UsuarioDTO> listarUsuarios() {
-        return usuarioService.listarUsuarios()
-                .stream()
-                .map(UsuarioDTO::new)
-                .toList();
+    @GetMapping("/{email}")
+    public ResponseEntity<PerfilUsuarioDTO> listarUsuarios(@PathVariable String email) {
+        return ResponseEntity.ok(this.usuarioService.buscarUsuario(email));
     }
 }
 

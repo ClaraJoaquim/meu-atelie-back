@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,7 +20,7 @@ public class Cliente {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "canal_aquisicao_id_canal", nullable = false)
+    @JoinColumn(name = "canal_aquisicao_id")
     private CanalAquisicao canalAquisicao;
 
     @ManyToOne
@@ -50,8 +51,16 @@ public class Cliente {
     @Column(name = "data_cadastro", updatable = false)
     private LocalDate dataCadastro;
 
+    @OneToMany(mappedBy = "cliente")
+    @JsonIgnore
+    private List<Encomenda> encomendas;
+
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private boolean ativo = true;
+
     @PrePersist
     protected void onCreate() {
         this.dataCadastro = LocalDate.now();
+        this.ativo = true;
     }
 }
