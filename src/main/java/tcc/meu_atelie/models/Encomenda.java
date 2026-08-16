@@ -3,6 +3,8 @@ package tcc.meu_atelie.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import tcc.meu_atelie.enums.StatusEncomenda;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -32,13 +34,14 @@ public class Encomenda {
     @Column(name = "data_entrega")
     private LocalDate dataEntrega;
 
-    @Column(name = "status_2")
-    private String status;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private StatusEncomenda status;
 
     @Column(name = "valor_total")
     private BigDecimal valorTotal;
 
-    @OneToMany(mappedBy = "encomenda", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "encomenda", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemEncomenda> itens;
 
     @OneToOne(mappedBy = "encomenda", cascade = CascadeType.ALL)
